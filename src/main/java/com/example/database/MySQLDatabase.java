@@ -8,6 +8,7 @@ package com.example.database;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 import java.io.InputStream;
 import java.io.IOException;
@@ -50,14 +51,13 @@ public class MySQLDatabase {
      * Establishes a connection to the MySQL database using provided credentials.
      * @return true if the connection is successful, false otherwise.
      */
-    public boolean connect() {
+    public boolean connect() throws DLException {
         try {
             connection = DriverManager.getConnection(url, username, password);  // Attempt to establish the database connection
             System.out.println("Database connection established successfully.");
             return true;
         } catch (SQLException e) {
-            System.out.println("Database connection failed: " + e.getMessage());
-            return false;
+            throw new DLException(e, Map.of("Database URL", url, "Action", "Connecting to database"));
         }
     }
 
@@ -65,7 +65,7 @@ public class MySQLDatabase {
      * Closes the active database connection if it exists.
      * @return true if the connection is closed successfully, false otherwise.
      */
-    public boolean close() {
+    public boolean close() throws DLException {
         try {
             if (connection != null && !connection.isClosed()) { // Check if the connection exists and is open before attempting to close
                 connection.close();                             // Close the database connection
@@ -73,7 +73,7 @@ public class MySQLDatabase {
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println("Error closing connection: " + e.getMessage());
+            throw new DLException(e, Map.of("Action", "Closing database connection"));
         }
         return false;
     }
@@ -89,7 +89,7 @@ public class MySQLDatabase {
      * @param sql The SELECT statement to execute.
      * @return A 2D ArrayList containing the query result.
      */
-    public ArrayList<ArrayList<String>> getData(String sql) {
+    public ArrayList<ArrayList<String>> getData(String sql) throws DLException {
         ArrayList<ArrayList<String>> resultData = new ArrayList<>();
 
         try {
@@ -110,8 +110,8 @@ public class MySQLDatabase {
             rs.close();   // Cleaning up ResultSet
             stmt.close(); // Cleaning up Statement
 
-        } catch (Exception e) {
-            System.out.println("Error retrieving data: " + e.getMessage());
+        } catch (SQLException e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Updating database"));
         }
 
         return resultData;
@@ -130,9 +130,7 @@ public class MySQLDatabase {
             stmt.close();                                    // Cleaning up Statement
             return true;
         } catch (Exception e) {
-            System.out.println("Error executing update: " + e.getMessage());
             return false;
         }
     }
-
 }

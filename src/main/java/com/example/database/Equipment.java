@@ -1,6 +1,9 @@
 package com.example.database;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Equipment class mirrors the Equipment table in the database.
@@ -50,60 +53,81 @@ public class Equipment {
     public void setEquipmentCapacity(int equipmentCapacity) { this.equipmentCapacity = equipmentCapacity; }
 
     // Fetch Method - Retrieves data for this equipmentId and updates attributes
-    public void fetch() {
+    public void fetch() throws DLException {
         db.connect();
         String sql = "SELECT * FROM equipment WHERE EquipID = " + equipId;
-        ArrayList<ArrayList<String>> result = db.getData(sql);
 
-        if (!result.isEmpty()) {
-            ArrayList<String> row = result.get(0);
-            this.equipmentName = row.get(1);
-            this.equipmentDescription = row.get(2);
-            this.equipmentCapacity = Integer.parseInt(row.get(3));
-            System.out.println("Data fetched successfully for EquipID: " + equipId);
-        } else {
-            // Reset attributes if no data is found
-            this.equipmentName = null;
-            this.equipmentDescription = null;
-            this.equipmentCapacity = 0;
-            System.out.println("No data found for EquipID: " + equipId);
+        try {
+            ArrayList<ArrayList<String>> result = db.getData(sql);
+
+            if (!result.isEmpty()) {
+                ArrayList<String> row = result.get(0);
+                this.equipmentName = row.get(1);
+                this.equipmentDescription = row.get(2);
+                this.equipmentCapacity = Integer.parseInt(row.get(3));
+                System.out.println("Data fetched successfully for EquipID: " + equipId);
+            } else {
+                // Reset attributes if no data is found
+                this.equipmentName = null;
+                this.equipmentDescription = null;
+                this.equipmentCapacity = 0;
+                System.out.println("No data found for EquipID: " + equipId);
+            }
+
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Fetching equipment"));
+        } finally {
+            db.close();
         }
-
-        db.close();
     }
 
     // Put Method - Updates the existing record in the database
-    public boolean put() {
+    public boolean put() throws DLException {
         db.connect();
         String sql = String.format(
                 "UPDATE equipment SET EquipmentName='%s', EquipmentDescription='%s', EquipmentCapacity=%d WHERE EquipID=%d",
                 equipmentName, equipmentDescription, equipmentCapacity, equipId
         );
-        boolean success = db.setData(sql);
-        db.close();
-        return success;
+
+        try {
+            return db.setData(sql);
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Updating equipment"));
+        } finally {
+            db.close();
+        }
     }
 
     // Post Method - Inserts a new record into the database
-    public boolean post() {
+    public boolean post() throws DLException {
         db.connect();
         String sql = String.format(
                 "INSERT INTO equipment (EquipID, EquipmentName, EquipmentDescription, EquipmentCapacity) " +
                         "VALUES (%d, '%s', '%s', %d)",
                 equipId, equipmentName, equipmentDescription, equipmentCapacity
         );
-        boolean success = db.setData(sql);
-        db.close();
-        return success;
+
+        try {
+            return db.setData(sql);
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Inserting equipment"));
+        } finally {
+            db.close();
+        }
     }
 
     // Remove Method - Deletes the record corresponding to this equipmentId
-    public boolean remove() {
+    public boolean remove() throws DLException {
         db.connect();
         String sql = "DELETE FROM equipment WHERE EquipID = " + equipId;
-        boolean success = db.setData(sql);
-        db.close();
-        return success;
+
+        try {
+            return db.setData(sql);
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Deleting equipment"));
+        } finally {
+            db.close();
+        }
     }
 
     /**

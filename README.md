@@ -17,26 +17,41 @@ This project demonstrates how to establish and manage a connection to a MySQL da
       - **Update** existing records with new data.
       - **Delete** records from the database.
 
+- **Exception Handling and Logging:**
+    - Implements `DLException` for structured error handling.
+    - Logs database and system errors to `error_log.txt` and SLF4J.
+    - Ensures only safe messages are displayed to users.
+
 - **Unit Testing:**
-   - Verifies database connection success and proper resource management.
-   - Tests CRUD (Create, Read, Update, Delete) operations on the `equipment` table to ensure data accuracy and integrity.
+    - Verifies database connection success and proper resource management.
+    - Tests CRUD (Create, Read, Update, Delete) operations on the `equipment` table to ensure data accuracy and integrity.
+    - Includes exception handling tests to confirm proper logging and safe error messaging.
 
 ## Project Structure
 
 ```
 MySQL_Connection_Project/
 ├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/
-│       │       └── example/
-│       │           └── database/
-│       │               ├── MySQLDatabase.java
-│       │               ├── Equipment.java
-│       │               └── Main.java
-│       └── resources/
-│           ├── db_config.properties
-│           └── travel.sql
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── example/
+│   │   │           └── database/
+│   │   │               ├── MySQLDatabase.java
+│   │   │               ├── Equipment.java
+│   │   │               ├── DLException.java
+│   │   │               └── Main.java
+│   ├── resources/
+│   │   ├── db_config.properties
+│   │   └── travel.sql
+├── src/
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── example/
+│                   ├── MySQLDatabaseTest.java
+│                   ├── EquipmentTest.java
+│                   └── DLExceptionTest.java
 ├── pom.xml
 └── README.md
 ```
@@ -157,15 +172,6 @@ Ensure the credentials match your MySQL configuration.
    mvn exec:java -Dexec.mainClass=com.example.database.Main
    ```
 
-## Running Tests
-
-This project includes unit tests to verify both database connectivity and CRUD operations on the `Equipment` table.
-
-1. **Run the Tests:**
-   ```bash
-   mvn test
-   ```
-   
 ## Running the Application with Manual Java Command
 
 If you prefer running the program directly with the `java` command instead of Maven, use the following structure:
@@ -177,9 +183,9 @@ If you prefer running the program directly with the `java` command instead of Ma
 ### Explanation of the Command:
 
 - **`java -cp`**: Specifies the **classpath**, which tells Java where to find the compiled classes and external libraries.
-   - `target/classes`: The directory containing your compiled `.class` files.
-   - `/path/to/mysql-connector-j-x.x.x.jar`: The path to the **MySQL JDBC driver**. Replace `x.x.x` with the actual version you have installed.
-      - For Maven users, this `.jar` file is usually found in the `~/.m2/repository/com/mysql/mysql-connector-j/` directory.
+    - `target/classes`: The directory containing your compiled `.class` files.
+    - `/path/to/mysql-connector-j-x.x.x.jar`: The path to the **MySQL JDBC driver**. Replace `x.x.x` with the actual version you have installed.
+        - For Maven users, this `.jar` file is usually found in the `~/.m2/repository/com/mysql/mysql-connector-j/` directory.
 
 - **`-Djava.library.path=lib`**: (Optional) Sets the **library path** if your program relies on native libraries. You can omit this if not needed.
 
@@ -188,10 +194,41 @@ If you prefer running the program directly with the `java` command instead of Ma
 ### Important Notes:
 
 - **Classpath Separators:**
-   - Use `:` on **macOS/Linux**.
-   - Use `;` on **Windows**.
+    - Use `:` on **macOS/Linux**.
+    - Use `;` on **Windows**.
 
 - **JDBC Driver Path:** Ensure the path to the MySQL Connector `.jar` matches the version installed on your system.
+
+## Running Tests
+
+This project includes unit tests to verify:
+- Database connectivity and CRUD operations (`EquipmentTest.java`)
+- Error handling and exception logging (`DLExceptionTest.java`)
+- General database operations (`MySQLDatabaseTest.java`)
+
+1. **Run the Tests:**
+   ```bash
+   mvn test
+   ```
+2. **Run a Specific Test (e.g., DLExceptionTest only):**
+    ```bash
+   mvn -Dtest=DLExceptionTest test
+   ```
+
+## Exception Handling and Logging
+
+This project uses a custom `DLException` class to manage all database and system errors.
+
+### **How Exception Handling Works:**
+- **All database operations are wrapped in try-catch blocks** and throw `DLException` instead of exposing system errors.
+- **Error details are logged to `error_log.txt`**, including:
+    - Exception type, message, and timestamp.
+    - SQL error codes (for database-related exceptions).
+    - Additional debugging information (failed SQL queries, user actions).
+
+### **Where Errors Are Logged:**
+- **File Log:** `error_log.txt`
+- **Console Log (SLF4J):** Displays structured logs in the terminal.
 
 ## Troubleshooting
 

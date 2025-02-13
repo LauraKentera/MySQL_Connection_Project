@@ -12,7 +12,7 @@ public class MySQLDatabaseTest {
      * Test basic database connection and disconnection.
      */
     @Test
-    public void testConnection() {
+    public void testConnection() throws DLException {
         MySQLDatabase db = new MySQLDatabase();
         assertTrue("Connection should be successful", db.connect());
         assertTrue("Connection should close successfully", db.close());
@@ -22,7 +22,7 @@ public class MySQLDatabaseTest {
      * Test CRUD operations on the Equipment table.
      */
     @Test
-    public void testEquipmentCRUDOperations() {
+    public void testEquipmentCRUDOperations() throws DLException {
         Equipment equipment = new Equipment(9999, "JUnit Test Equipment", "Test Description", 50);
 
         // Test Insert (post)

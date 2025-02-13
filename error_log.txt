@@ -1,0 +1,78 @@
+=== ERROR LOG ===
+Timestamp: 2025-02-13 14:57:37
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Action: Updating database
+  SQL Query: INVALID SQL SYNTAX
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-13 14:57:37
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-13 14:57:37
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-13 14:58:06
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Updating database
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-13 14:58:06
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-13 14:58:06
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-13 15:21:35
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Updating database
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-13 15:21:35
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-13 15:21:35
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
