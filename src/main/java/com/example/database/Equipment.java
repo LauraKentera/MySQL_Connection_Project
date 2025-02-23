@@ -58,7 +58,8 @@ public class Equipment {
         String sql = "SELECT * FROM equipment WHERE EquipID = " + equipId;
 
         try {
-            ArrayList<ArrayList<String>> result = db.getData(sql);
+            ArrayList<ArrayList<String>> result = db.getData(sql, false);
+
 
             if (!result.isEmpty()) {
                 ArrayList<String> row = result.get(0);

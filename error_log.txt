@@ -76,3 +76,465 @@ Additional Info:
   Action: Testing DLException
 =================
 
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:41:27
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Updating database
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:41:27
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:41:27
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:43:36
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Updating database
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:43:36
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:43:36
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:45:18
+Exception Type: java.sql.SQLException
+Message: No suitable driver found for jdbc:mysql://localhost:3306/travel23
+SQLState: 08001
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Database URL: jdbc:mysql://localhost:3306/travel23
+  Action: Connecting to database
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:45:55
+Exception Type: java.sql.SQLException
+Message: No suitable driver found for jdbc:mysql://localhost:3306/travel23
+SQLState: 08001
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Database URL: jdbc:mysql://localhost:3306/travel23
+  Action: Connecting to database
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:47:32
+Exception Type: java.sql.SQLException
+Message: No suitable driver found for jdbc:mysql://localhost:3306/travel23
+SQLState: 08001
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Database URL: jdbc:mysql://localhost:3306/travel23
+  Action: Connecting to database
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:52:04
+Exception Type: java.sql.SQLException
+Message: No suitable driver found for jdbc:mysql://localhost:3306/travel23
+SQLState: 08001
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Action: Connecting to database
+  Database URL: jdbc:mysql://localhost:3306/travel23
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:53:17
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Action: Updating database
+  SQL Query: INVALID SQL SYNTAX
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:53:17
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:53:17
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:53:26
+Exception Type: java.sql.SQLException
+Message: No suitable driver found for jdbc:mysql://localhost:3306/travel23
+SQLState: 08001
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Database URL: jdbc:mysql://localhost:3306/travel23
+  Action: Connecting to database
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-19 13:54:18
+Exception Type: java.sql.SQLException
+Message: No suitable driver found for jdbc:mysql://localhost:3306/travel23
+SQLState: 08001
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Database URL: jdbc:mysql://localhost:3306/travel23
+  Action: Connecting to database
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 17:24:33
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Action: Fetching data with metadata
+  SQL Query: INVALID SQL SYNTAX
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 17:24:33
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 17:24:33
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 17:58:45
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Executing Query
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 17:58:45
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 17:58:45
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:22:53
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Executing Query
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:22:53
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:22:53
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:30:20
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Action: Executing Query
+  SQL Query: INVALID SQL SYNTAX
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:30:20
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:30:20
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:30:25
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Executing Query
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:30:25
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:30:25
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:32:54
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Executing Query
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:32:54
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:32:54
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:49:07
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Executing Query
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:49:07
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:49:07
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:52:00
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Action: Executing Query
+  SQL Query: INVALID SQL SYNTAX
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:52:00
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:52:00
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:52:05
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  Action: Executing Query
+  SQL Query: INVALID SQL SYNTAX
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:52:05
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:52:05
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:56:56
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Executing Query
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:56:56
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:56:56
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:58:24
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Executing Query
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:58:24
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:58:24
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:59:42
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Executing Query
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:59:42
+Exception Type: java.lang.Exception
+Message: Test Exception
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:59:42
+Exception Type: java.lang.Exception
+Message: Database Failure
+Additional Info:
+  Action: Testing DLException
+=================
+

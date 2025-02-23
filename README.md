@@ -1,249 +1,240 @@
-# MySQL Connection Project
+## **🚀 MySQL Connection Project**
 
-## Project Overview
+## **📌 Project Overview**
+This project demonstrates how to establish and manage a connection to a **MySQL database** using Java.
 
-This project demonstrates how to establish and manage a connection to a MySQL database using Java. It covers the following functionalities:
+### **🔹 Features:**
+- **🛠️ Database Connectivity:** Establishes and manages MySQL connections using JDBC.
+- **📄 Data Manipulation:** Perform CRUD operations on the `equipment` table.
+- **⚠️ Exception Handling:** Implements structured error handling via `DLException`.
+- **📊 Metadata Retrieval:** Extracts table, database, and query metadata dynamically.
+- **🧪 Unit Testing:** Ensures robust testing for database operations.
 
-- **Database Connectivity:**
-   - Establishes a connection to the MySQL database using JDBC.
-   - Executes SQL queries and handles database interactions.
-   - Ensures proper closure of database connections after each operation.
+---
 
-- **Data Manipulation with the `Equipment` Class:**
-   - Mirrors the `equipment` table from the database.
-   - Provides methods to:
-      - **Insert** new records into the database.
-      - **Retrieve** records using specific `EquipID`.
-      - **Update** existing records with new data.
-      - **Delete** records from the database.
-
-- **Exception Handling and Logging:**
-    - Implements `DLException` for structured error handling.
-    - Logs database and system errors to `error_log.txt` and SLF4J.
-    - Ensures only safe messages are displayed to users.
-
-- **Unit Testing:**
-    - Verifies database connection success and proper resource management.
-    - Tests CRUD (Create, Read, Update, Delete) operations on the `equipment` table to ensure data accuracy and integrity.
-    - Includes exception handling tests to confirm proper logging and safe error messaging.
-
-## Project Structure
+## **📂 Project Structure**
 
 ```
-MySQL_Connection_Project/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/
-│   │   │       └── example/
-│   │   │           └── database/
-│   │   │               ├── MySQLDatabase.java
-│   │   │               ├── Equipment.java
-│   │   │               ├── DLException.java
-│   │   │               └── Main.java
-│   ├── resources/
-│   │   ├── db_config.properties
-│   │   └── travel.sql
-├── src/
-│   └── test/
-│       └── java/
-│           └── com/
-│               └── example/
-│                   ├── MySQLDatabaseTest.java
-│                   ├── EquipmentTest.java
-│                   └── DLExceptionTest.java
-├── pom.xml
-└── README.md
+📁 MySQL_Connection_Project/
+├── 📁 src/
+│   ├── 📁 main/
+│   │   ├── 📁 java/com/example/database/
+│   │   │   ├── 📄 MySQLDatabase.java
+│   │   │   ├── 📄 Equipment.java
+│   │   │   ├── 📄 DLException.java
+│   │   │   ├── 📄 Main.java
+│   ├── 📁 resources/
+│   │   ├── 📝 db_config.properties
+│   │   ├── 📝 travel.sql
+│   ├── 📁 test/
+│   │   ├── 📄 MySQLDatabaseTest.java
+│   │   ├── 📄 EquipmentTest.java
+│   │   ├── 📄 DLExceptionTest.java
+├── 📝 pom.xml
+└── 📝 README.md
 ```
 
-## Prerequisites
+---
 
-- Java 21
-- MySQL Server
-- Maven
-- IntelliJ IDEA (optional for development)
+## **⚙️ Prerequisites**
+- **☕ Java 21**
+- **🐬 MySQL Server**
+- **🐘 Maven**
+- **🖥️ IntelliJ IDEA** *(optional for development)*
 
-## Setting Up the Database
+---
 
-### For macOS Users:
+## **📦 Setting Up the Database**
 
-1. **Ensure MySQL Server is Running:**
-   ```bash
-   brew services start mysql
-   ```
+### **💻 macOS Users:**
+```bash
+brew services start mysql
+mysql -u root -p
+CREATE DATABASE travel23;
+mysql -u root -p travel23 < src/main/resources/travel.sql
+USE travel23;
+SHOW TABLES;
+EXIT;
+```
 
-2. **Create the Database:**
-   ```bash
-   mysql -u root -p
-   CREATE DATABASE travel23;
-   EXIT;
-   ```
+### **🖥️ Windows Users:**
+```bash
+mysql -u root -p
+CREATE DATABASE travel23;
+mysql -u root -p travel23 < src\main\resources\travel.sql
+USE travel23;
+SHOW TABLES;
+EXIT;
+```
 
-3. **Import the SQL File:**
-   ```bash
-   mysql -u root -p travel23 < src/main/resources/travel.sql
-   ```
+### **🐧 Linux Users:**
+```bash
+sudo systemctl start mysql
+mysql -u root -p
+CREATE DATABASE travel23;
+mysql -u root -p travel23 < src/main/resources/travel.sql
+USE travel23;
+SHOW TABLES;
+EXIT;
+```
 
-4. **Verify the Database:**
-   ```bash
-   mysql -u root -p
-   USE travel23;
-   SHOW TABLES;
-   EXIT;
-   ```
+---
 
-### For Windows Users:
+## **🛠️ Configuring the Application**
 
-1. **Ensure MySQL Server is Running:**
-    - Open **Services** (type `services.msc` in the Start menu).
-    - Find **MySQL** service, right-click, and select **Start**.
-
-2. **Create the Database:**
-    - Open **Command Prompt**:
-      ```bash
-      mysql -u root -p
-      CREATE DATABASE travel23;
-      EXIT;
-      ```
-
-3. **Import the SQL File:**
-    - Navigate to the project directory:
-      ```bash
-      cd path\to\MySQL_Connection_Project
-      mysql -u root -p travel23 < src\main\resources\travel.sql
-      ```
-
-4. **Verify the Database:**
-   ```bash
-   mysql -u root -p
-   USE travel23;
-   SHOW TABLES;
-   EXIT;
-   ```
-
-### For Linux Users:
-
-1. **Ensure MySQL Server is Running:**
-   ```bash
-   sudo systemctl start mysql
-   ```
-
-2. **Create the Database:**
-   ```bash
-   mysql -u root -p
-   CREATE DATABASE travel23;
-   EXIT;
-   ```
-
-3. **Import the SQL File:**
-   ```bash
-   mysql -u root -p travel23 < src/main/resources/travel.sql
-   ```
-
-4. **Verify the Database:**
-   ```bash
-   mysql -u root -p
-   USE travel23;
-   SHOW TABLES;
-   EXIT;
-   ```
-
-## Configuring the Application
-
-Update the `db_config.properties` file located in `src/main/resources/`:
-
+Update **`db_config.properties`** in **`src/main/resources/`**:
 ```
 db.url=jdbc:mysql://localhost:3306/travel23
 db.username=root
 db.password=
 ```
+Ensure your credentials **match** your MySQL setup.
 
-Ensure the credentials match your MySQL configuration.
+---
 
-## Building and Running the Project
+## **🚀 Building and Running the Project**
 
-1. **Build the Project:**
-   ```bash
-   mvn clean install
-   ```
+### **🏗️ Build the Project:**
+```bash
+mvn clean install
+```
 
-2. **Run the Application:**
-   ```bash
-   mvn exec:java -Dexec.mainClass=com.example.database.Main
-   ```
+### **▶️ Run the Application:**
+```bash
+mvn exec:java -Dexec.mainClass=com.example.database.Main
+```
 
-## Running the Application with Manual Java Command
+### **💻 Running with Manual Java Command:**
+```bash
+java -cp "target/classes:/path/to/mysql-connector-j-x.x.x.jar" -Djava.library.path=lib com.example.database.Main
+```
 
-If you prefer running the program directly with the `java` command instead of Maven, use the following structure:
+---
 
-   ```bash
-   java -cp "target/classes:/path/to/mysql-connector-j-x.x.x.jar" -Djava.library.path=lib com.example.database.Main
-   ```
+## **📊 Database Metadata Retrieval**
 
-### Explanation of the Command:
+This project **supports retrieving metadata** from the database and tables.  
+These methods allow you to **view important details** about the database structure, tables, and query results.
 
-- **`java -cp`**: Specifies the **classpath**, which tells Java where to find the compiled classes and external libraries.
-    - `target/classes`: The directory containing your compiled `.class` files.
-    - `/path/to/mysql-connector-j-x.x.x.jar`: The path to the **MySQL JDBC driver**. Replace `x.x.x` with the actual version you have installed.
-        - For Maven users, this `.jar` file is usually found in the `~/.m2/repository/com/mysql/mysql-connector-j/` directory.
+### **📋 Available Metadata Methods**
+| 🏷️ Method Name | 📄 Description |
+|---------------|-------------|
+| `printDatabaseInfo()` | Displays database product name, version, driver details, and all available tables. |
+| `printTableInfo(String tableName)` | Prints the structure of a table, including column names, types, and primary keys. |
+| `printResultInfo(String query)` | Displays metadata for a query, including column count and column types. |
 
-- **`-Djava.library.path=lib`**: (Optional) Sets the **library path** if your program relies on native libraries. You can omit this if not needed.
+✅ **Example Output for `printDatabaseInfo()`**
+```
+=== Database Metadata ===
+Product Name: MySQL
+Product Version: 9.2.0
+Driver Name: MySQL Connector/J
+Driver Version: mysql-connector-j-8.0.33
+Tables in Database:
+- sys_config
+- equipment
+- locations
+- passenger
+- phones
+- staff
+- trip
+- trip_directory
+- trip_people
+- tripcodes
+- zips
+```
 
-- **`com.example.database.Main`**: The fully qualified name of the **main class** to execute.
+✅ **Example Output for `printTableInfo("equipment")`**
+```
+=== Table Metadata: equipment ===
+- EquipID (INT)
+- EquipmentName (VARCHAR)
+- EquipmentDescription (VARCHAR)
+- EquipmentCapacity (INT)
+Primary Keys:
+- EquipID
+```
 
-### Important Notes:
+---
 
-- **Classpath Separators:**
-    - Use `:` on **macOS/Linux**.
-    - Use `;` on **Windows**.
-
-- **JDBC Driver Path:** Ensure the path to the MySQL Connector `.jar` matches the version installed on your system.
-
-## Running Tests
+## **🧪 Running Tests**
 
 This project includes unit tests to verify:
-- Database connectivity and CRUD operations (`EquipmentTest.java`)
-- Error handling and exception logging (`DLExceptionTest.java`)
-- General database operations (`MySQLDatabaseTest.java`)
+- ✅ **Database connectivity & CRUD operations** (`EquipmentTest.java`)
+- ✅ **Exception handling & error logging** (`DLExceptionTest.java`)
+- ✅ **General database operations** (`MySQLDatabaseTest.java`)
 
-1. **Run the Tests:**
-   ```bash
-   mvn test
-   ```
-2. **Run a Specific Test (e.g., DLExceptionTest only):**
-    ```bash
-   mvn -Dtest=DLExceptionTest test
-   ```
+### **▶️ Run All Tests:**
+```bash
+mvn test
+```
 
-## Exception Handling and Logging
+### **🔍 Run a Specific Test (e.g., DLExceptionTest only):**
+```bash
+mvn -Dtest=DLExceptionTest test
+```
 
-This project uses a custom `DLException` class to manage all database and system errors.
+---
 
-### **How Exception Handling Works:**
-- **All database operations are wrapped in try-catch blocks** and throw `DLException` instead of exposing system errors.
-- **Error details are logged to `error_log.txt`**, including:
-    - Exception type, message, and timestamp.
-    - SQL error codes (for database-related exceptions).
-    - Additional debugging information (failed SQL queries, user actions).
+## **⚠️ Exception Handling and Logging**
 
-### **Where Errors Are Logged:**
-- **File Log:** `error_log.txt`
-- **Console Log (SLF4J):** Displays structured logs in the terminal.
+This project **implements structured exception handling** using the custom `DLException` class.
 
-## Troubleshooting
+### **🔹 How Exception Handling Works:**
+- **All database operations** are wrapped in try-catch blocks and throw `DLException`.
+- **Errors are logged** to `error_log.txt` and SLF4J for debugging.
+- **Ensures safe user messages** instead of exposing sensitive system errors.
 
-- **Unknown Database Error:** Ensure the database name in `db_config.properties` matches the actual database.
-- **Connection Refused:** Verify MySQL is running.
-- **Access Denied:** Check MySQL user permissions.
+### **📄 Where Errors Are Logged:**
+- **📝 File Log:** `error_log.txt`
+- **🖥️ Console Log:** SLF4J structured logging
 
-## Notes
+✅ **Example Error Log for an Invalid Query**
+```
+=== ERROR LOG ===
+Timestamp: 2025-02-23 18:22:53
+Exception Type: java.sql.SQLException
+Message: Statement.executeQuery() cannot issue statements that do not produce result sets.
+SQLState: S1009
+Vendor Error Code: 0
+Reason: null
+Additional Info:
+  SQL Query: INVALID SQL SYNTAX
+  Action: Executing Query
+=================
+```
 
-- This project uses Maven for dependency management.
-- Ensure the `travel.sql` file is correctly imported to avoid runtime errors.
-- For any issues with IntelliJ IDEA, rebuild the project or invalidate caches if necessary.
-- Basic unit tests are included to verify database connection functionality.
+By ensuring **safe error handling**, we prevent **sensitive database information** from being exposed.
 
-## License
+---
 
-This project is for educational purposes as part of the ISTE-330 course.
+## **📜 License**
 
+This project is developed for **educational purposes** as part of the **ISTE-330 Database Connectivity and Access** course at Rochester Institute of Technology (RIT) Croatia.
+
+### **🔖 License Type**
+This project is licensed under the **MIT License**, meaning you can freely use, modify, and distribute it under the following conditions:
+- **Attribution Required** – If you modify or distribute this project, you must include the original license notice.
+- **No Warranty** – This software is provided "as-is" without any guarantees or warranties of any kind.
+
+### **📄 Third-Party Dependencies & Licenses**
+| 📦 Dependency | 📜 License |  
+|--------------|------------|  
+| **MySQL Connector/J** | GNU General Public License v2 (with FOSS exception) |  
+| **SLF4J (Simple Logging Facade for Java)** | MIT License |  
+| **JUnit** | Eclipse Public License 2.0 |  
+| **Lombok** | MIT License |  
+
+🔗 **License References:**
+- [MySQL Connector/J License](https://dev.mysql.com/doc/connector-j/en/)
+- [SLF4J License](http://www.slf4j.org/license.html)
+- [JUnit License](https://www.eclipse.org/legal/epl-2.0/)
+- [Lombok License](https://github.com/projectlombok/lombok/blob/master/LICENSE)
+
+---
+
+## **📢 Disclaimer**
+This software is **strictly for educational purposes** and is **not intended for production use**.  
+By using this project, you acknowledge that it comes **without any warranty** or **guarantee of correctness**.
+
+---

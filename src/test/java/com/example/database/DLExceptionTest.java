@@ -42,7 +42,7 @@ public class DLExceptionTest {
         MySQLDatabase db = new MySQLDatabase();
         try {
             db.connect();
-            db.getData("INVALID SQL SYNTAX"); // This should cause an exception
+            db.getData("INVALID SQL SYNTAX", false); // This should cause an exception
             fail("DLException should have been thrown");
         } catch (DLException e) {
             assertNotNull(e.getMessage()); // Ensure the exception was properly thrown
