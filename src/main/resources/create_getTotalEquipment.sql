@@ -1,0 +1,11 @@
+DELIMITER //
+CREATE FUNCTION getTotalEquipment()
+    RETURNS INT
+    DETERMINISTIC
+BEGIN
+    DECLARE total INT;
+SELECT COUNT(*) INTO total FROM equipment;
+RETURN total;
+END;
+//
+DELIMITER ;

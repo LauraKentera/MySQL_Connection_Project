@@ -132,6 +132,106 @@ public class Equipment {
     }
 
     /**
+     * fetchP - Retrieves data for this equipment using a prepared statement.
+     */
+    public void fetchP() throws DLException {
+        db.connect();
+        String sql = "SELECT * FROM equipment WHERE EquipID = ? LIMIT 1";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(String.valueOf(equipId));
+        try {
+            ArrayList<ArrayList<String>> result = db.getData(sql, params, false);
+            if (result != null && !result.isEmpty()) {
+                ArrayList<String> row = result.get(0);
+                // Assuming column order: EquipID, EquipmentName, EquipmentDescription, EquipmentCapacity
+                this.equipmentName = row.get(1);
+                this.equipmentDescription = row.get(2);
+                this.equipmentCapacity = Integer.parseInt(row.get(3));
+                System.out.println("Prepared fetch successful for EquipID: " + equipId);
+            } else {
+                System.out.println("No data found for EquipID: " + equipId);
+            }
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Fetching equipment with prepared statement"));
+        } finally {
+            db.close();
+        }
+    }
+
+    /**
+     * putP - Updates the equipment record using a prepared statement.
+     * Returns true if the update affected at least one row.
+     */
+    public boolean putP() throws DLException {
+        db.connect();
+        String sql = "UPDATE equipment SET EquipmentName = ?, EquipmentDescription = ?, EquipmentCapacity = ? WHERE EquipID = ?";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(equipmentName);
+        params.add(equipmentDescription);
+        params.add(String.valueOf(equipmentCapacity));
+        params.add(String.valueOf(equipId));
+        try {
+            boolean success = db.setData(sql, params);
+            if (!success) {
+                System.out.println("Prepared update failed for EquipID: " + equipId);
+            }
+            return success;
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Updating equipment with prepared statement"));
+        } finally {
+            db.close();
+        }
+    }
+
+    /**
+     * postP - Inserts a new equipment record using a prepared statement.
+     * Returns true if the insertion was successful.
+     */
+    public boolean postP() throws DLException {
+        db.connect();
+        String sql = "INSERT INTO equipment (EquipID, EquipmentName, EquipmentDescription, EquipmentCapacity) VALUES (?, ?, ?, ?)";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(String.valueOf(equipId));
+        params.add(equipmentName);
+        params.add(equipmentDescription);
+        params.add(String.valueOf(equipmentCapacity));
+        try {
+            boolean success = db.setData(sql, params);
+            if (!success) {
+                System.out.println("Prepared insert failed for EquipID: " + equipId);
+            }
+            return success;
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Inserting equipment with prepared statement"));
+        } finally {
+            db.close();
+        }
+    }
+
+    /**
+     * removeP - Deletes the equipment record using a prepared statement.
+     * Returns true if the deletion was successful.
+     */
+    public boolean removeP() throws DLException {
+        db.connect();
+        String sql = "DELETE FROM equipment WHERE EquipID = ?";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(String.valueOf(equipId));
+        try {
+            boolean success = db.setData(sql, params);
+            if (!success) {
+                System.out.println("Prepared delete failed for EquipID: " + equipId);
+            }
+            return success;
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Deleting equipment with prepared statement"));
+        } finally {
+            db.close();
+        }
+    }
+
+
+    /**
      * Utility method to print Equipment details.
      */
     public void printEquipment() {

@@ -1,14 +1,26 @@
 ## **🚀 MySQL Connection Project**
 
 ## **📌 Project Overview**
-This project demonstrates how to establish and manage a connection to a **MySQL database** using Java.
+This project demonstrates how to establish and manage a connection to a **MySQL database** using Java. It includes secure CRUD operations on the `equipment` table, robust exception handling, metadata retrieval, and unit testing. The project now supports prepared statements for secure parameter binding and includes bonus functionality for stored procedure execution.
 
 ### **🔹 Features:**
-- **🛠️ Database Connectivity:** Establishes and manages MySQL connections using JDBC.
-- **📄 Data Manipulation:** Perform CRUD operations on the `equipment` table.
-- **⚠️ Exception Handling:** Implements structured error handling via `DLException`.
-- **📊 Metadata Retrieval:** Extracts table, database, and query metadata dynamically.
-- **🧪 Unit Testing:** Ensures robust testing for database operations.
+- **🛠️ Database Connectivity:**  
+  Establishes and manages MySQL connections using JDBC.
+- **📄 Data Manipulation:**  
+  Perform CRUD operations on the `equipment` table.  
+  Both standard and prepared statement methods are supported (e.g., `fetch()`, `put()`, `post()`, `remove()` and `fetchP()`, `putP()`, `postP()`, `removeP()`).
+- **⚠️ Exception Handling:**  
+  Implements structured error handling via the custom `DLException` class.
+- **📊 Metadata Retrieval:**  
+  Dynamically extracts metadata for the database, tables, and query results.
+- **🔒 Prepared Statements:**  
+  Supports secure prepared statement methods for binding parameters and reducing SQL injection risks. New methods include:
+    - `prepare(String sql, ArrayList<String> values)`
+    - `getData(String sql, ArrayList<String> values, boolean includeHeaders)`
+    - `setData(String sql, ArrayList<String> values)`
+    - `executeProc(String procName, ArrayList<String> values)`
+- **🧪 Unit Testing:**  
+  Ensures robust testing of all database operations using JUnit.
 
 ---
 
@@ -26,13 +38,17 @@ This project demonstrates how to establish and manage a connection to a **MySQL 
 │   ├── 📁 resources/
 │   │   ├── 📝 db_config.properties
 │   │   ├── 📝 travel.sql
+│   │   ├── 📝 create_getTotalEquipment.sql
 │   ├── 📁 test/
 │   │   ├── 📄 MySQLDatabaseTest.java
 │   │   ├── 📄 EquipmentTest.java
 │   │   ├── 📄 DLExceptionTest.java
+│   │   ├── 📄 EquipmentPreparedTest.java
 ├── 📝 pom.xml
 └── 📝 README.md
 ```
+
+> **Note:** The new stored procedure SQL file (`create_getTotalEquipment.sql`) and prepared statement methods in the database and Equipment classes enable enhanced security and flexibility in database operations.
 
 ---
 
@@ -90,6 +106,23 @@ db.password=
 ```
 Ensure your credentials **match** your MySQL setup.
 
+> **Bonus – Stored Procedure Setup:**  
+> To test the stored procedure functionality, execute the following SQL (or run the `create_getTotalEquipment.sql` file located in `src/main/resources/`):
+>
+> ```sql
+> DELIMITER //
+> CREATE FUNCTION getTotalEquipment() 
+> RETURNS INT
+> DETERMINISTIC
+> BEGIN
+>     DECLARE total INT;
+>     SELECT COUNT(*) INTO total FROM equipment;
+>     RETURN total;
+> END; 
+> //
+> DELIMITER ;
+> ```
+
 ---
 
 ## **🚀 Building and Running the Project**
@@ -113,7 +146,7 @@ java -cp "target/classes:/path/to/mysql-connector-j-x.x.x.jar" -Djava.library.pa
 
 ## **📊 Database Metadata Retrieval**
 
-This project **supports retrieving metadata** from the database and tables.  
+This project **supports retrieving metadata** from the database and its tables.  
 These methods allow you to **view important details** about the database structure, tables, and query results.
 
 ### **📋 Available Metadata Methods**
@@ -160,9 +193,11 @@ Primary Keys:
 ## **🧪 Running Tests**
 
 This project includes unit tests to verify:
-- ✅ **Database connectivity & CRUD operations** (`EquipmentTest.java`)
-- ✅ **Exception handling & error logging** (`DLExceptionTest.java`)
-- ✅ **General database operations** (`MySQLDatabaseTest.java`)
+- ✅ **Database connectivity & CRUD operations** (`EquipmentTest.java`, `MySQLDatabaseTest.java`, `DLExceptionTest.java`)
+- ✅ **Prepared Statement Methods:**  
+  A dedicated test class (`EquipmentPreparedTest.java`) checks:
+    - Insertion, fetching, updating, and deletion of an equipment record using prepared methods (`postP()`, `fetchP()`, `putP()`, `removeP()`).
+    - Execution of the stored procedure via `executeProc()`.
 
 ### **▶️ Run All Tests:**
 ```bash
@@ -182,8 +217,8 @@ This project **implements structured exception handling** using the custom `DLEx
 
 ### **🔹 How Exception Handling Works:**
 - **All database operations** are wrapped in try-catch blocks and throw `DLException`.
-- **Errors are logged** to `error_log.txt` and SLF4J for debugging.
-- **Ensures safe user messages** instead of exposing sensitive system errors.
+- **Errors are logged** to `error_log.txt` and via SLF4J for debugging.
+- **Sensitive database information** is protected from exposure by providing safe error messages.
 
 ### **📄 Where Errors Are Logged:**
 - **📝 File Log:** `error_log.txt`
@@ -203,8 +238,6 @@ Additional Info:
   Action: Executing Query
 =================
 ```
-
-By ensuring **safe error handling**, we prevent **sensitive database information** from being exposed.
 
 ---
 

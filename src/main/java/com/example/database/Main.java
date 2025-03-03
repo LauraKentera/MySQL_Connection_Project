@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 /**
  * Main class serves as the entry point of the application.
@@ -106,6 +107,48 @@ public class Main {
 
             } catch (DLException e) {
                 log.error("⚠️ Error retrieving metadata: {}", e.getMessage());
+            }
+
+            // Test the stored procedure (assuming getTotalEquipment exists in your DB)
+            try {
+                ArrayList<String> procParams = new ArrayList<>(); // No parameters if your procedure doesn't require any
+                int totalEquipment = db.executeProc("getTotalEquipment", procParams);
+                log.info("Total Equipment Records (from stored procedure): {}", totalEquipment);
+            } catch (DLException e) {
+                log.error("Error executing stored procedure: {}", e.getMessage());
+            }
+
+            // Test prepared statement methods for Equipment
+            try {
+                // Create a new Equipment record using postP (prepared insert)
+                Equipment newEquip = new Equipment(1234, "Test Car", "Test Description", 4);
+                if (newEquip.postP()) {
+                    log.info("Prepared insert successful for Equipment ID: {}", newEquip.getEquipId());
+                } else {
+                    log.warn("Prepared insert failed for Equipment ID: {}", newEquip.getEquipId());
+                }
+
+                // Fetch the record using fetchP (prepared select)
+                Equipment fetchedEquip = new Equipment(1234);
+                fetchedEquip.fetchP();
+                fetchedEquip.printEquipment();
+
+                // Update the record using putP (prepared update)
+                fetchedEquip.setEquipmentCapacity(5);
+                if (fetchedEquip.putP()) {
+                    log.info("Prepared update successful for Equipment ID: {}", fetchedEquip.getEquipId());
+                } else {
+                    log.warn("Prepared update failed for Equipment ID: {}", fetchedEquip.getEquipId());
+                }
+
+                // Delete the record using removeP (prepared delete)
+                if (fetchedEquip.removeP()) {
+                    log.info("Prepared delete successful for Equipment ID: {}", fetchedEquip.getEquipId());
+                } else {
+                    log.warn("Prepared delete failed for Equipment ID: {}", fetchedEquip.getEquipId());
+                }
+            } catch (DLException e) {
+                log.error("Error testing prepared statement methods: {}", e.getMessage());
             }
 
             db.close();
