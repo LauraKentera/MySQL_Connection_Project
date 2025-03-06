@@ -68,6 +68,11 @@ public class MySQLDatabase {
         }
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
+
+
     /**
      * Executes a SELECT SQL query and returns the result as a 2D ArrayList.
      * Optionally includes column headers as the first row.
@@ -243,4 +248,111 @@ public class MySQLDatabase {
             System.out.println("- " + metaData.getColumnName(i) + " (" + metaData.getColumnTypeName(i) + ")");
         }
     }
+
+    // Prepares a PreparedStatement with the provided SQL and parameter values.
+    public PreparedStatement prepare(String sql, ArrayList<String> values) throws DLException {
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            // Bind each value to its corresponding placeholder (1-indexed)
+            for (int i = 0; i < values.size(); i++) {
+                ps.setString(i + 1, values.get(i));
+            }
+            return ps;
+        } catch (SQLException e) {
+            throw new DLException(e, Map.of("SQL Statement", sql, "Action", "Preparing statement"));
+        }
+    }
+
+    /**
+     * Executes a SELECT query using a prepared statement.
+     * Converts the ResultSet into a 2D ArrayList of strings with the first row being column names (if includeHeaders is true).
+     * Returns null if the query fails.
+     */
+    public ArrayList<ArrayList<String>> getData(String sql, ArrayList<String> values, boolean includeHeaders) throws DLException {
+        ArrayList<ArrayList<String>> results = new ArrayList<>();
+        try {
+            PreparedStatement ps = prepare(sql, values);
+            try (ResultSet rs = ps.executeQuery()) {
+                ResultSetMetaData meta = rs.getMetaData();
+                if (includeHeaders) {
+                    ArrayList<String> headers = new ArrayList<>();
+                    for (int i = 1; i <= meta.getColumnCount(); i++) {
+                        headers.add(meta.getColumnName(i));
+                    }
+                    results.add(headers);
+                }
+                while (rs.next()) {
+                    ArrayList<String> row = new ArrayList<>();
+                    for (int i = 1; i <= meta.getColumnCount(); i++) {
+                        row.add(rs.getString(i));
+                    }
+                    results.add(row);
+                }
+            }
+        } catch (SQLException e) {
+            return null;  // Query failed, return null
+        }
+        return results;
+    }
+
+    /**
+     * Executes an INSERT, UPDATE, or DELETE query using a prepared statement.
+     * Returns true if at least one row was affected, false otherwise.
+     */
+    public boolean setData(String sql, ArrayList<String> values) throws DLException {
+        try {
+            PreparedStatement ps = prepare(sql, values);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Executes a stored procedure using a callable statement.
+     * The procedure is assumed to return a single integer value.
+     *
+     * @param procName The name of the stored procedure.
+     * @param values An ArrayList of string values to bind as parameters.
+     * @return The integer value returned by the stored procedure.
+     * @throws DLException if the execution fails.
+     */
+    public int executeProc(String procName, ArrayList<String> values) throws DLException {
+        try {
+            // Build the call string dynamically.
+            String call = "{ ? = call " + procName + "(";
+            for (int i = 0; i < values.size(); i++) {
+                call += (i == 0 ? "?" : ",?");
+            }
+            call += ") }";
+            CallableStatement cs = connection.prepareCall(call);
+            cs.registerOutParameter(1, Types.INTEGER);
+            for (int i = 0; i < values.size(); i++) {
+                cs.setString(i + 2, values.get(i));
+            }
+            cs.execute();
+            int result = cs.getInt(1);
+            cs.close();
+            return result;
+        } catch (SQLException e) {
+            throw new DLException(e, Map.of("Stored Procedure", procName, "Action", "Executing stored procedure"));
+        }
+    }
+
+
+    public void startTrans() throws SQLException {
+        connection.setAutoCommit(false);
+    }
+
+    public void endTrans() throws SQLException {
+        connection.commit();
+        connection.setAutoCommit(true);
+    }
+
+    public void rollbackTrans() throws SQLException {
+        connection.rollback();
+        connection.setAutoCommit(true);
+    }
+
 }

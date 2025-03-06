@@ -157,6 +157,31 @@ Primary Keys:
 
 ---
 
+## **🔄 Equipment Swap Functionality**
+
+The project now includes a transactional equipment swap feature that allows you to swap the names of two equipment records in a single atomic operation.
+
+### **How It Works:**
+- **Atomic Swap:**  
+  The `swapEquipNames()` method in the `Equipment` class performs the swap within a transaction. This ensures that both equipment records are updated together—either both updates succeed or both fail, preserving data integrity.
+
+- **Swap Operation:**  
+  The method fetches the name of the second equipment (using its EquipID), stores the current equipment’s name in a temporary variable, and then updates both records to swap their names.
+
+- **Logging & Error Handling:**  
+  Robust logging via SLF4J captures the swap process, including headers and details on which IDs are being swapped. In case of an error, the transaction is rolled back to prevent partial updates.
+
+### **Usage:**
+- **Implementation:**  
+  The swap functionality is invoked in `Main.java`.
+
+- **Verification:**  
+  The operation is verified through console outputs, ensuring that the swap occurred as expected.
+
+Add this functionality to further enhance secure, transactional data manipulation within your MySQL Connection Project.
+
+---
+
 ## **🧪 Running Tests**
 
 This project includes unit tests to verify:
