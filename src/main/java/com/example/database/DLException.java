@@ -50,20 +50,23 @@ public class DLException extends Exception {
         try (FileWriter fw = new FileWriter("error_log.txt", true);
              PrintWriter pw = new PrintWriter(fw)) {
 
-            // Timestamp and Exception Message
             pw.println("=== ERROR LOG ===");
             pw.println("Timestamp: " + timestamp);
-            pw.println("Exception Type: " + e.getClass().getName());
-            pw.println("Message: " + e.getMessage());
 
-            // Handle SQL Exceptions specifically
-            if (e instanceof SQLException sqlEx) {
-                pw.println("SQLState: " + sqlEx.getSQLState());
-                pw.println("Vendor Error Code: " + sqlEx.getErrorCode());
-                pw.println("Reason: " + sqlEx.getCause());
+            if (e != null) {
+                pw.println("Exception Type: " + e.getClass().getName());
+                pw.println("Message: " + e.getMessage());
+
+                // Handle SQL Exceptions specifically
+                if (e instanceof SQLException sqlEx) {
+                    pw.println("SQLState: " + sqlEx.getSQLState());
+                    pw.println("Vendor Error Code: " + sqlEx.getErrorCode());
+                    pw.println("Reason: " + sqlEx.getCause());
+                }
+            } else {
+                pw.println("Exception: (none - manually thrown error)");
             }
 
-            // Log Additional Information (if provided)
             if (additionalInfo != null && !additionalInfo.isEmpty()) {
                 pw.println("Additional Info:");
                 additionalInfo.forEach((key, value) -> pw.println("  " + key + ": " + value));
@@ -72,14 +75,19 @@ public class DLException extends Exception {
             pw.println("=================\n");
 
             // Log to SLF4J
-            if (additionalInfo != null && !additionalInfo.isEmpty()) {
-                logger.error("Timestamp: {} | Exception: {} | Additional Info: {}", timestamp, e.getMessage(), additionalInfo, e);
+            if (e != null) {
+                if (additionalInfo != null && !additionalInfo.isEmpty()) {
+                    logger.error("Timestamp: {} | Exception: {} | Additional Info: {}", timestamp, e.getMessage(), additionalInfo, e);
+                } else {
+                    logger.error("Timestamp: {} | Exception: {}", timestamp, e.getMessage(), e);
+                }
             } else {
-                logger.error("Timestamp: {} | Exception: {}", timestamp, e.getMessage(), e);
+                logger.error("Timestamp: {} | Manual DLException triggered. Info: {}", timestamp, additionalInfo);
             }
 
         } catch (Exception logException) {
-            logger.error("Timestamp: {} | Failed to write to log file: {}", timestamp,  logException.getMessage());
+            logger.error("Timestamp: {} | Failed to write to log file: {}", timestamp, logException.getMessage());
         }
     }
+
 }

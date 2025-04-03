@@ -1,4 +1,5 @@
 package com.example.database;
+import com.example.database.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,8 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * Equipment class mirrors the Equipment table in the database.
@@ -22,6 +23,10 @@ public class Equipment {
     private String equipmentName;
     private String equipmentDescription;
     private int equipmentCapacity;
+
+    // User authentication
+    private User currentUser;
+
 
     // Database connection
     private MySQLDatabase db;
@@ -59,8 +64,27 @@ public class Equipment {
     public int getEquipmentCapacity() { return equipmentCapacity; }
     public void setEquipmentCapacity(int equipmentCapacity) { this.equipmentCapacity = equipmentCapacity; }
 
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+    }
+
+    // Check authentication
+    private boolean isAuthorized(String action) {
+        if (currentUser == null) return false;
+
+        return switch (currentUser.getRole()) {
+            case "Admin" -> true;
+            case "Editor" -> !action.equals("remove");
+            case "General" -> action.equals("fetch");
+            default -> false;
+        };
+    }
+
     // Fetch Method - Retrieves data for this equipmentId and updates attributes
     public void fetch() throws DLException {
+        if (!isAuthorized("fetch")) {
+            throw new DLException(null, Map.of("Error", "Unauthorized access to FETCH method."));
+        }
         db.connect();
         String sql = "SELECT * FROM equipment WHERE EquipID = " + equipId;
 
@@ -91,6 +115,10 @@ public class Equipment {
 
     // Put Method - Updates the existing record in the database
     public boolean put() throws DLException {
+        if (!isAuthorized("put")) {
+            throw new DLException(null, Map.of("Error", "Unauthorized access to PUT method."));
+        }
+
         db.connect();
         String sql = String.format(
                 "UPDATE equipment SET EquipmentName='%s', EquipmentDescription='%s', EquipmentCapacity=%d WHERE EquipID=%d",
@@ -106,8 +134,13 @@ public class Equipment {
         }
     }
 
+
     // Post Method - Inserts a new record into the database
     public boolean post() throws DLException {
+        if (!isAuthorized("post")) {
+            throw new DLException(null, Map.of("Error", "Unauthorized access to POST method."));
+        }
+
         db.connect();
         String sql = String.format(
                 "INSERT INTO equipment (EquipID, EquipmentName, EquipmentDescription, EquipmentCapacity) " +
@@ -126,6 +159,10 @@ public class Equipment {
 
     // Remove Method - Deletes the record corresponding to this equipmentId
     public boolean remove() throws DLException {
+        if (!isAuthorized("remove")) {
+            throw new DLException(null, Map.of("Error", "Unauthorized access to REMOVE method."));
+        }
+
         db.connect();
         String sql = "DELETE FROM equipment WHERE EquipID = " + equipId;
 
@@ -142,6 +179,10 @@ public class Equipment {
      * fetchP - Retrieves data for this equipment using a prepared statement.
      */
     public void fetchP() throws DLException {
+        if (!isAuthorized("fetch")) {
+            throw new DLException(null, Map.of("Error", "Unauthorized access to FETCH method."));
+        }
+
         db.connect();
         String sql = "SELECT * FROM equipment WHERE EquipID = ? LIMIT 1";
         ArrayList<String> params = new ArrayList<>();
@@ -170,6 +211,10 @@ public class Equipment {
      * Returns true if the update affected at least one row.
      */
     public boolean putP() throws DLException {
+        if (!isAuthorized("put")) {
+            throw new DLException(null, Map.of("Error", "Unauthorized access to PUT method."));
+        }
+
         db.connect();
         String sql = "UPDATE equipment SET EquipmentName = ?, EquipmentDescription = ?, EquipmentCapacity = ? WHERE EquipID = ?";
         ArrayList<String> params = new ArrayList<>();
@@ -195,6 +240,10 @@ public class Equipment {
      * Returns true if the insertion was successful.
      */
     public boolean postP() throws DLException {
+        if (!isAuthorized("post")) {
+            throw new DLException(null, Map.of("Error", "Unauthorized access to POST method."));
+        }
+
         db.connect();
         String sql = "INSERT INTO equipment (EquipID, EquipmentName, EquipmentDescription, EquipmentCapacity) VALUES (?, ?, ?, ?)";
         ArrayList<String> params = new ArrayList<>();
@@ -220,6 +269,10 @@ public class Equipment {
      * Returns true if the deletion was successful.
      */
     public boolean removeP() throws DLException {
+        if (!isAuthorized("remove")) {
+            throw new DLException(null, Map.of("Error", "Unauthorized access to REMOVE method."));
+        }
+
         db.connect();
         String sql = "DELETE FROM equipment WHERE EquipID = ?";
         ArrayList<String> params = new ArrayList<>();
@@ -308,6 +361,108 @@ public class Equipment {
             }
         }
     }
+
+    public void fetchA() throws DLException {
+        if (!isAuthorized("fetch")) {
+            System.out.println("🚫 Unauthorized access to FETCH method.");
+            throw new DLException(null, Map.of("Error", "Unauthorized access to FETCH method."));
+        }
+
+        db.connect();
+        String sql = "SELECT * FROM equipment WHERE EquipID = ?";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(String.valueOf(equipId));
+
+        try {
+            ArrayList<ArrayList<String>> result = db.getData(sql, params, false);
+            if (!result.isEmpty()) {
+                ArrayList<String> row = result.get(0);
+                this.equipmentName = row.get(1);
+                this.equipmentDescription = row.get(2);
+                this.equipmentCapacity = Integer.parseInt(row.get(3));
+                System.out.println("✅ fetchA successful.");
+            } else {
+                System.out.println("❌ No equipment found with EquipID: " + equipId);
+            }
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Authorized fetch"));
+        } finally {
+            db.close();
+        }
+    }
+
+    public boolean putA() throws DLException {
+        if (!isAuthorized("put")) {
+            System.out.println("🚫 Unauthorized access to PUT method.");
+            throw new DLException(null, Map.of("Error", "Unauthorized access to PUT method."));
+        }
+
+        db.connect();
+        String sql = "UPDATE equipment SET EquipmentName = ?, EquipmentDescription = ?, EquipmentCapacity = ? WHERE EquipID = ?";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(equipmentName);
+        params.add(equipmentDescription);
+        params.add(String.valueOf(equipmentCapacity));
+        params.add(String.valueOf(equipId));
+
+        try {
+            boolean success = db.setData(sql, params);
+            System.out.println(success ? "✅ putA successful." : "❌ putA failed.");
+            return success;
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Authorized put"));
+        } finally {
+            db.close();
+        }
+    }
+
+    public boolean postA() throws DLException {
+        if (!isAuthorized("post")) {
+            System.out.println("🚫 Unauthorized access to POST method.");
+            throw new DLException(null, Map.of("Error", "Unauthorized access to POST method."));
+        }
+
+        db.connect();
+        String sql = "INSERT INTO equipment (EquipID, EquipmentName, EquipmentDescription, EquipmentCapacity) VALUES (?, ?, ?, ?)";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(String.valueOf(equipId));
+        params.add(equipmentName);
+        params.add(equipmentDescription);
+        params.add(String.valueOf(equipmentCapacity));
+
+        try {
+            boolean success = db.setData(sql, params);
+            System.out.println(success ? "✅ postA successful." : "❌ postA failed.");
+            return success;
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Authorized post"));
+        } finally {
+            db.close();
+        }
+    }
+
+    public boolean removeA() throws DLException {
+        if (!isAuthorized("remove")) {
+            System.out.println("🚫 Unauthorized access to REMOVE method.");
+            throw new DLException(null, Map.of("Error", "Unauthorized access to REMOVE method."));
+        }
+
+        db.connect();
+        String sql = "DELETE FROM equipment WHERE EquipID = ?";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(String.valueOf(equipId));
+
+        try {
+            boolean success = db.setData(sql, params);
+            System.out.println(success ? "✅ removeA successful." : "❌ removeA failed.");
+            return success;
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL Query", sql, "Action", "Authorized remove"));
+        } finally {
+            db.close();
+        }
+    }
+
 
 }
 

@@ -1,6 +1,7 @@
 package com.example.database;
 
 import java.io.InputStream;
+import java.security.MessageDigest;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Map;
@@ -15,6 +16,7 @@ public class MySQLDatabase {
     private String username;
     private String password;
     private Connection connection;
+    private int failedLoginAttempts = 0;
 
     /**
      * Constructor: Loads database credentials from properties file.
@@ -354,5 +356,105 @@ public class MySQLDatabase {
         connection.rollback();
         connection.setAutoCommit(true);
     }
+
+    // Authentication - Exercise 8
+    public User authenticateUser(String inputId, String inputPassword) throws DLException {
+        connect();
+        String sql = "SELECT * FROM User WHERE Id = ?";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(inputId);
+
+        try {
+            ArrayList<ArrayList<String>> results = getData(sql, params, false);
+            if (results == null || results.isEmpty()) return null;
+
+            ArrayList<String> row = results.get(0);
+            String storedHash = row.get(3);
+            String inputHash = hashPassword(inputPassword);
+
+            if (storedHash.equals(inputHash)) {
+                return new User(row.get(0), row.get(1), row.get(2), storedHash, row.get(4), row.get(5));
+            }
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL", sql, "Action", "Authenticating user"));
+        } finally {
+            close();
+        }
+
+        return null;
+    }
+
+    private String hashPassword(String password) throws Exception {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] hash = md.digest(password.getBytes());
+        return java.util.Base64.getEncoder().encodeToString(hash);
+    }
+
+
+    public User login(String userId, String password) throws DLException {
+        User user = authenticateUser(userId, password);
+
+        if (user != null) {
+            failedLoginAttempts = 0;  // reset on success
+            System.out.println("✅ Login successful for user: " + user.getId());
+            return user;
+        } else {
+            failedLoginAttempts++;
+            System.out.println("❌ Login failed. Attempt " + failedLoginAttempts + " of 3.");
+
+            if (failedLoginAttempts >= 3) {
+                System.out.println("🚫 Too many failed login attempts. Terminating application.");
+                System.exit(1);
+            }
+
+            return null;
+        }
+    }
+
+    public boolean addUser(User newUser, String rawPassword) throws DLException {
+        connect();
+
+        String sql = "INSERT INTO User (Id, FirstName, LastName, Password, Role, OrganizationUnit) VALUES (?, ?, ?, ?, ?, ?)";
+        ArrayList<String> params = new ArrayList<>();
+        try {
+            String hashedPassword = hashPassword(rawPassword);
+            params.add(newUser.getId());
+            params.add(newUser.getFirstName());
+            params.add(newUser.getLastName());
+            params.add(hashedPassword);
+            params.add(newUser.getRole());
+            params.add(newUser.getOrganizationUnit());
+
+            boolean success = setData(sql, params);
+            if (success) {
+                System.out.println("✅ User added successfully.");
+            } else {
+                System.out.println("❌ Failed to add user.");
+            }
+            return success;
+
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL", sql, "Action", "Adding new user"));
+        } finally {
+            close();
+        }
+    }
+
+    public void displayAllEquipment() throws DLException {
+        connect();
+        String sql = "SELECT * FROM Equipment ORDER BY EquipID";
+        try {
+            ArrayList<ArrayList<String>> results = getData(sql, true);
+            System.out.println("\n📋 Equipment Table:");
+            for (ArrayList<String> row : results) {
+                System.out.printf("%-6s %-20s %-25s %-10s%n", row.get(0), row.get(1), row.get(2), row.get(3));
+            }
+        } catch (Exception e) {
+            throw new DLException(e, Map.of("SQL", sql, "Action", "Displaying equipment table"));
+        } finally {
+            close();
+        }
+    }
+
 
 }

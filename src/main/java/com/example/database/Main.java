@@ -1,222 +1,235 @@
 package com.example.database;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Scanner;
 
-/**
- * Main class serves as the entry point of the application.
- * It demonstrates how to connect to and disconnect from a MySQL database
- * using the MySQLDatabase class while handling exceptions properly.
- */
 public class Main {
 
-    // Manually declaring the logger
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
-
     public static void main(String[] args) {
-        printBanner();  // Print the startup banner
-
         try {
-            MySQLDatabase db = new MySQLDatabase(); // Create an instance of MySQLDatabase to manage database operations
+            Scanner sc = new Scanner(System.in);
+            MySQLDatabase db = new MySQLDatabase();
 
-            // Attempt to connect to the database and handle success or failure
-            if (db.connect()) {
-                log.info("✅ Connection successful.");
-            } else {
-                log.error("❌ Connection failed.");
-                return; // Stop execution if the connection fails
-            }
+            int failedAttempts = 0;
+            User user = null;
 
-            // Step 1: Fetch an existing Equipment record
-            Equipment equipment = new Equipment(568);  // Example EquipID
-            try {
-                equipment.fetch();
-                equipment.printEquipment();
-            } catch (DLException e) {
-                log.error("⚠️ Error fetching equipment: {}", e.getMessage());
-            }
+            while (failedAttempts < 3) {
+                System.out.print("Enter username: ");
+                String userId = sc.nextLine();
+                System.out.print("Enter password: ");
+                String password = sc.nextLine();
 
-            // Step 2: Insert a new Equipment record
-            Equipment newEquipment = new Equipment(9999, "Test Bus", "Short Range", 50);
-            try {
-                if (newEquipment.post()) {
-                    log.info("\n✅ New Equipment inserted successfully!");
+                user = db.authenticateUser(userId, password);
+                if (user != null) {
+                    System.out.println("✅ Welcome, " + user.getFirstName() + "! You are logged in as " + user.getRole());
+                    break;
                 } else {
-                    log.warn("\n❌ Failed to insert new Equipment.");
+                    failedAttempts++;
+                    System.out.println("❌ Login failed. Attempt " + failedAttempts + " of 3.");
                 }
-            } catch (DLException e) {
-                log.error("⚠️ Error inserting equipment: {}", e.getMessage());
             }
 
-            // Step 3: Fetch and print the newly inserted equipment
-            Equipment fetchedNewEquipment = new Equipment(9999);
-            try {
-                fetchedNewEquipment.fetch();
-                fetchedNewEquipment.printEquipment();
-            } catch (DLException e) {
-                log.error("⚠️ Error fetching new equipment: {}", e.getMessage());
+            if (failedAttempts == 3) {
+                System.out.println("\n😈 Too many failed attempts...");
+                fakeMalwareLoading();
+                System.out.println("💀 Just kidding! But seriously, stop guessing passwords.");
+                return;
             }
 
-            // Step 4: Update the Equipment record
-            try {
-                fetchedNewEquipment.setEquipmentCapacity(75);
-                if (fetchedNewEquipment.put()) {
-                    log.info("\n✅ Equipment updated successfully!");
-                } else {
-                    log.warn("\n❌ Failed to update Equipment.");
+
+            // Show permissions
+            System.out.println("\nAvailable actions for your role:");
+            switch (user.getRole()) {
+                case "Admin" -> System.out.println("fetch, put, post, remove, adduser");
+                case "Editor" -> System.out.println("fetch, put, post");
+                case "General" -> System.out.println("fetch");
+                default -> System.out.println("You have no permissions.");
+            }
+
+            // Show equipment table
+            db.displayAllEquipment();
+
+            // Interactive command loop
+            while (true) {
+                System.out.print("\nType an action (fetch, put, post, remove, adduser) or 'exit': ");
+                String input = sc.nextLine().toLowerCase();
+
+                if (input.equals("exit")) break;
+
+                try {
+                    switch (input) {
+                        case "fetch" -> {
+                            System.out.print("Enter EquipID to fetch: ");
+                            int id = Integer.parseInt(sc.nextLine());
+                            Equipment eq = new Equipment(id);
+                            eq.setCurrentUser(user);
+                            eq.fetchA();
+                            eq.printEquipment();
+                        }
+
+                        case "put" -> {
+                            System.out.print("Enter EquipID to update: ");
+                            int id = Integer.parseInt(sc.nextLine());
+
+                            System.out.print("New name: ");
+                            String name = sc.nextLine();
+
+                            System.out.print("New description: ");
+                            String desc = sc.nextLine();
+
+                            System.out.print("New capacity: ");
+                            int cap = Integer.parseInt(sc.nextLine());
+
+                            Equipment eq = new Equipment(id, name, desc, cap);
+                            eq.setCurrentUser(user);
+                            eq.putA();
+                        }
+
+                        case "post" -> {
+                            System.out.print("New EquipID: ");
+                            int newId = Integer.parseInt(sc.nextLine());
+
+                            System.out.print("Name: ");
+                            String name = sc.nextLine();
+
+                            System.out.print("Description: ");
+                            String desc = sc.nextLine();
+
+                            System.out.print("Capacity: ");
+                            int cap = Integer.parseInt(sc.nextLine());
+
+                            Equipment newEq = new Equipment(newId, name, desc, cap);
+                            newEq.setCurrentUser(user);
+                            newEq.postA();
+                        }
+
+                        case "remove" -> {
+                            System.out.print("Enter EquipID to delete: ");
+                            int id = Integer.parseInt(sc.nextLine());
+
+                            Equipment eq = new Equipment(id);
+                            eq.setCurrentUser(user);
+                            eq.removeA();
+                        }
+
+                        case "adduser" -> {
+                            if (!user.getRole().equalsIgnoreCase("Admin")) {
+                                System.out.println("🚫 Only Admins can add users.");
+                                break;
+                            }
+
+                            System.out.print("New Username (Id): ");
+                            String newId = sc.nextLine();
+
+                            System.out.print("First Name: ");
+                            String firstName = sc.nextLine();
+
+                            System.out.print("Last Name: ");
+                            String lastName = sc.nextLine();
+
+                            System.out.print("Password: ");
+                            String newPassword = sc.nextLine();
+
+                            System.out.print("Role (Admin/Editor/General): ");
+                            String role = sc.nextLine();
+
+                            System.out.print("Org Unit: ");
+                            String org = sc.nextLine();
+
+                            User newUser = new User(newId, firstName, lastName, null, role, org);
+                            db.addUser(newUser, newPassword);
+                        }
+
+                        default -> System.out.println("❓ Unknown command.");
+                    }
+
+                    // Show updated table
+                    db.displayAllEquipment();
+
+                } catch (DLException e) {
+                    if (e.getMessage().contains("Unauthorized")) {
+                        System.out.println("🚫 Access denied. You are not allowed to perform this action.");
+                    } else {
+                        System.out.println("❌ Something went wrong. Check logs for details.");
+                        e.printStackTrace();
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("❌ Invalid number format. Please try again.");
                 }
-            } catch (DLException e) {
-                log.error("⚠️ Error updating equipment: {}", e.getMessage());
             }
 
-            // Step 5: Fetch and display updated data
-            try {
-                fetchedNewEquipment.fetch();
-                fetchedNewEquipment.printEquipment();
-            } catch (DLException e) {
-                log.error("⚠️ Error fetching updated equipment: {}", e.getMessage());
-            }
-
-            // Step 6: Delete the Equipment record
-            try {
-                if (fetchedNewEquipment.remove()) {
-                    log.info("\n✅ Equipment removed successfully!");
-                } else {
-                    log.warn("\n❌ Failed to remove Equipment.");
-                }
-            } catch (DLException e) {
-                log.error("⚠️ Error removing equipment: {}", e.getMessage());
-            }
-
-            // ===============================
-            // ✅ Step 7: Metadata Retrieval
-            // ===============================
-
-            try {
-                log.info("\n=== 📊 Database Metadata ===");
-                db.printDatabaseInfo();  // Prints general database metadata
-
-                log.info("\n=== 📋 Table Metadata: equipment ===");
-                db.printTableInfo("equipment");  // Prints metadata for the 'equipment' table
-
-                log.info("\n=== 🔎 Query Metadata ===");
-                db.printResultInfo("SELECT * FROM equipment WHERE EquipmentCapacity > 50");  // Prints metadata about a sample query
-
-            } catch (DLException e) {
-                log.error("⚠️ Error retrieving metadata: {}", e.getMessage());
-            }
-
-            // Test the stored procedure (assuming getTotalEquipment exists in your DB)
-            try {
-                ArrayList<String> procParams = new ArrayList<>(); // No parameters if your procedure doesn't require any
-                int totalEquipment = db.executeProc("getTotalEquipment", procParams);
-                log.info("Total Equipment Records (from stored procedure): {}", totalEquipment);
-            } catch (DLException e) {
-                log.error("Error executing stored procedure: {}", e.getMessage());
-            }
-
-            // Test prepared statement methods for Equipment
-            try {
-                // Create a new Equipment record using postP (prepared insert)
-                Equipment newEquip = new Equipment(1234, "Test Car", "Test Description", 4);
-                if (newEquip.postP()) {
-                    log.info("Prepared insert successful for Equipment ID: {}", newEquip.getEquipId());
-                } else {
-                    log.warn("Prepared insert failed for Equipment ID: {}", newEquip.getEquipId());
-                }
-
-                // Fetch the record using fetchP (prepared select)
-                Equipment fetchedEquip = new Equipment(1234);
-                fetchedEquip.fetchP();
-                fetchedEquip.printEquipment();
-
-                // Update the record using putP (prepared update)
-                fetchedEquip.setEquipmentCapacity(5);
-                if (fetchedEquip.putP()) {
-                    log.info("Prepared update successful for Equipment ID: {}", fetchedEquip.getEquipId());
-                } else {
-                    log.warn("Prepared update failed for Equipment ID: {}", fetchedEquip.getEquipId());
-                }
-
-                // Delete the record using removeP (prepared delete)
-                if (fetchedEquip.removeP()) {
-                    log.info("Prepared delete successful for Equipment ID: {}", fetchedEquip.getEquipId());
-                } else {
-                    log.warn("Prepared delete failed for Equipment ID: {}", fetchedEquip.getEquipId());
-                }
-            } catch (DLException e) {
-                log.error("Error testing prepared statement methods: {}", e.getMessage());
-            }
-
-            // Swapping equipment names using transactions
-            try {
-                // Create two Equipment objects with valid IDs (ensure these records exist in your database)
-                Equipment equip1 = new Equipment(568);
-                Equipment equip2 = new Equipment(5634);
-
-                // Fetch initial data for both equipment
-                equip1.fetchP();
-                equip2.fetchP();
-
-                // Print a header and a log message showing which IDs are about to be swapped
-                log.info("\n=== Equipment Swap Operation ===");
-                log.info("Swapping equipment names between EquipID: {} and EquipID: {}", equip1.getEquipId(), equip2.getEquipId());
-
-                // Display equipment details before swapping
-                log.info("Before swapping:");
-                equip1.printEquipment();
-                equip2.printEquipment();
-
-                // Perform the swap operation
-                equip1.swapEquipNames(equip2.getEquipId());
-
-                // Re-fetch and display the data after the swap to verify changes
-                equip1.fetchP();
-                equip2.fetchP();
-                log.info("After swapping:");
-                equip1.printEquipment();
-                equip2.printEquipment();
-            } catch (DLException e) {
-                log.error("Error swapping equipment names: {}", e.getMessage());
-            }
-
-
-
-            db.close();
-            log.info("✅ Database connection closed.");
+            System.out.println("👋 Logged out.");
 
         } catch (Exception e) {
-            log.error("❌ An unexpected error occurred. Please contact the administrator.", e);
+            e.printStackTrace();
         }
     }
 
-    /**
-     * Prints the startup banner.
-     */
-    private static void printBanner() {
-        String banner = """
-                
-                ███    ███ ██    ██ ███████  ██████  ██     \s
-                ████  ████  ██  ██  ██      ██    ██ ██     \s
-                ██ ████ ██   ████   ███████ ██    ██ ██     \s
-                ██  ██  ██    ██         ██ ██ ▄▄ ██ ██     \s
-                ██      ██    ██    ███████  ██████  ███████\s
-                
-                Database Connectivity Project
-                ----------------------------
-                """;
 
-        try {
-            String localAddress = InetAddress.getLocalHost().getHostAddress();
-            log.info("\n{}", banner);
-            log.info("🌐 Running locally: http://127.0.0.1:3306");
-            log.info("🌍 External access: http://{}:3306", localAddress);
-            log.info("--------------------------------------------------");
-        } catch (UnknownHostException e) {
-            log.warn("⚠️ Could not determine external IP.");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // "Hidden" malware fun method
+    private static void fakeMalwareLoading() throws InterruptedException {
+        String[] stages = {
+                "[▓          ]", "[▓▓         ]", "[▓▓▓        ]",
+                "[▓▓▓▓       ]", "[▓▓▓▓▓      ]", "[▓▓▓▓▓▓     ]",
+                "[▓▓▓▓▓▓▓    ]", "[▓▓▓▓▓▓▓▓   ]", "[▓▓▓▓▓▓▓▓▓  ]", "[▓▓▓▓▓▓▓▓▓▓]"
+        };
+
+        System.out.println("\nInstalling malware.exe...");
+        for (String stage : stages) {
+            System.out.print("\r" + stage);
+            Thread.sleep(250);
         }
+
+        System.out.println("\n💣 Malware installed. System compromised...");
+        Thread.sleep(1200);
     }
 }

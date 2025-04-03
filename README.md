@@ -182,6 +182,44 @@ Add this functionality to further enhance secure, transactional data manipulatio
 
 ---
 
+## 🔐 Role-Based Login & Authorization
+
+This project now includes a role-based login system that controls what actions users can perform based on their assigned role. Upon launching the application, users are prompted to log in using a predefined username and password. Once authenticated, they are granted access to a set of features based on their role.
+
+### User Roles
+
+- **Admin** – Full access to all actions, including adding new users.
+- **Editor** – Can fetch, insert, and update records but cannot delete or add users.
+- **General** – Read-only access, allowed to fetch records only.
+
+### Available Actions by Role
+
+| Role     | Allowed Actions                          |
+|----------|------------------------------------------|
+| Admin    | fetch, put, post, remove, adduser        |
+| Editor   | fetch, put, post                         |
+| General  | fetch                                    |
+
+### Predefined Users for Testing
+
+Your professor can use these users to log in and test the full role-based workflow:
+
+| Username   | Password     | Role    |
+|------------|--------------|---------|
+| `admin1`   | `admin123`   | Admin   |
+| `editor1`  | `editor123`  | Editor  |
+| `general1` | `general123` | General |
+
+All passwords are securely stored in the database using SHA-256 hashing and are verified during login.
+
+### How It Works
+
+After login, the terminal displays the list of available actions based on the user’s role and shows the full contents of the equipment table. Users can then choose an action by typing its name. The application prompts for necessary input (e.g., equipment ID, new values) and performs the operation, if permitted. If the user attempts an action they are not authorized for, a friendly error message is shown and the attempt is logged via the custom `DLException`.
+
+Additionally, Admin users can add new users interactively by typing `adduser`. They’ll be prompted for all required fields, and the new user will be added to the database with their password hashed securely.
+
+---
+
 ## **🧪 Running Tests**
 
 This project includes unit tests to verify:

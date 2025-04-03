@@ -564,3 +564,70 @@ Additional Info:
   Action: Testing DLException
 =================
 
+=== ERROR LOG ===
+Timestamp: 2025-04-01 22:16:57
+=== ERROR LOG ===
+Timestamp: 2025-04-03 22:19:41
+=== ERROR LOG ===
+Timestamp: 2025-04-03 22:21:32
+Exception Type: java.sql.SQLIntegrityConstraintViolationException
+Message: Duplicate entry '9999' for key 'equipment.PRIMARY'
+SQLState: 23000
+Vendor Error Code: 1062
+Reason: null
+Additional Info:
+  SQL Query: INSERT INTO equipment (EquipID, EquipmentName, EquipmentDescription, EquipmentCapacity) VALUES (9999, 'New Equip', 'Created by user', 10)
+  Action: Executing Update
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-04-03 22:21:32
+Exception Type: com.example.database.DLException
+Message: Unable to complete operation. Please contact the administrator.
+Additional Info:
+  SQL Query: INSERT INTO equipment (EquipID, EquipmentName, EquipmentDescription, EquipmentCapacity) VALUES (9999, 'New Equip', 'Created by user', 10)
+  Action: Inserting equipment
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-04-03 22:27:44
+Exception: (none - manually thrown error)
+Additional Info:
+  Error: Unauthorized access to REMOVE method.
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-04-03 22:28:10
+Exception: (none - manually thrown error)
+Additional Info:
+  Error: Unauthorized access to POST method.
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-04-03 22:28:14
+Exception: (none - manually thrown error)
+Additional Info:
+  Error: Unauthorized access to PUT method.
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-04-03 22:28:17
+Exception: (none - manually thrown error)
+Additional Info:
+  Error: Unauthorized access to REMOVE method.
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-04-03 22:41:20
+Exception: (none - manually thrown error)
+Additional Info:
+  Error: Unauthorized access to REMOVE method.
+=================
+
+=== ERROR LOG ===
+Timestamp: 2025-04-03 22:51:08
+Exception: (none - manually thrown error)
+Additional Info:
+  Error: Unauthorized access to REMOVE method.
+=================
+
